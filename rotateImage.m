@@ -69,30 +69,31 @@ function img_rotated = rotateImage(img, angle)
 
             % Ensure that the calculated pixel is within the bounds of the
             % original image
-            if min(original_pixel, [], "all") >= 1 && all(original_pixel <= [img_height img_width])
-
-                % Determine the four neighboring pixels for bilinear interpolation
-                nearest_floor = floor(original_pixel);
-                nearest_ceil = ceil(original_pixel);
-
-                % Compute the relative areas of the four neighboring pixels
-                w1 = (nearest_ceil(2)-original_pixel(2))  * (nearest_ceil(1)-original_pixel(1));
-                w2 = (original_pixel(2)-nearest_floor(2)) * (original_pixel(1)-nearest_floor(1));
-                w3 = (nearest_ceil(2)-original_pixel(2))  * (original_pixel(1)-nearest_floor(1));
-                w4 = (original_pixel(2)-nearest_floor(2)) * (nearest_ceil(1)-original_pixel(1));
-                neighbors = [w1, w2; w3, w4];
-
-                % Copy the colors of the original image to the rotated
-                % Compute the weighted average of the colors to get the interpolated color
-                neighobors_resized = repmat(neighbors, [1 1 size(img, 3)]);
-
-                weighted_average = img(nearest_floor(1):nearest_ceil(1), nearest_floor(2):nearest_ceil(2), :);
-                weighted_average = double(weighted_average) .* neighobors_resized;
-
-                % Assign the interpolated color to the output image                    
-                img_rotated(i, j, :) = sum(sum(weighted_average), 2);
-
+            if ~(min(original_pixel, [], "all") >= 1 && all(original_pixel <= [img_height img_width]))
+                continue;
             end
+
+            % Determine the four neighboring pixels for bilinear interpolation
+            nearest_floor = floor(original_pixel);
+            nearest_ceil = ceil(original_pixel);
+
+            % Compute the relative areas of the four neighboring pixels
+            w1 = (nearest_ceil(2)-original_pixel(2))  * (nearest_ceil(1)-original_pixel(1));
+            w2 = (original_pixel(2)-nearest_floor(2)) * (original_pixel(1)-nearest_floor(1));
+            w3 = (nearest_ceil(2)-original_pixel(2))  * (original_pixel(1)-nearest_floor(1));
+            w4 = (original_pixel(2)-nearest_floor(2)) * (nearest_ceil(1)-original_pixel(1));
+            neighbors = [w1, w2; w3, w4];
+
+            % Copy the colors of the original image to the rotated
+            % Compute the weighted average of the colors to get the interpolated color
+            neighobors_resized = repmat(neighbors, [1 1 size(img, 3)]);
+
+            weighted_average = img(nearest_floor(1):nearest_ceil(1), nearest_floor(2):nearest_ceil(2), :);
+            weighted_average = double(weighted_average) .* neighobors_resized;
+
+            % Assign the interpolated color to the output image                    
+            img_rotated(i, j, :) = sum(sum(weighted_average), 2);
+
         end
     end
 

@@ -13,7 +13,6 @@ function [img_deskewed] = alignDocument(img)
     img = imread('text1.png');
 
     rr = rotateImage(img, -30);
-    %rr = imgRotation(img, -30);
     imshow(rr, [])
 
 
