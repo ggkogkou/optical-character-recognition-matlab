@@ -14,21 +14,13 @@ function [angle] = findRotationAngle(img)
     %
     % --------------------------------------------------------------
     %
-    % Convert image to double type
-    img = rgb2gray(img);
-  
+    % Convert image to grayscale 
     % Apply Gaussian blur to filter higher frequencies
-    img_gaussian = imgaussfilt(img, 4);
+    sigma_blur = 4;
 
-    % Calculate 2D FFT of image
-    img_fft = fft2((img_gaussian));
-
-    % Calculate magnitude of FFT
-    img_fft = abs(img_fft);
-
+    % Calculate magnitude of image FFT
     % Center FFT and compute logarithm of magnitude
-    img_fft = abs(fftshift(img_fft));
-    img_fft_log = log(1 + img_fft);
+    img_fft_log = log(1 + abs(fftshift(fft2(imgaussfilt(rgb2gray(img), sigma_blur)))));
 
     % Plot logarithm of FFT
     figure(2)
@@ -51,8 +43,11 @@ function [angle] = findRotationAngle(img)
 
     cropped_fft = img_fft_log(crop_y_start:crop_y_end, crop_x_start:crop_x_end);
 
+    % Blur a bit the cropped FFT to enhance the dominant line
+    cropped_fft = imgaussfilt(cropped_fft, 2);
+
+
     figure(3)
-    %cropped_fft = imgaussfilt(cropped_fft, 4);
     imshow(cropped_fft, [])
 
     % Select the brightest pixel of FFT

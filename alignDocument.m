@@ -27,12 +27,14 @@ function [aligned_img] = alignDocument(img)
     img = imread('text1.png');
     img = imrotate(img, -32);
 
+    interp_method = "nearest";
+
     % Find approximate rotation angle using FFT
     angle_approx = findRotationAngle(img);
     fprintf("An approximation skew angle is %.4f\n", angle_approx);
 
     % Rotate the image by that angle
-    img = rotateImage(img, angle_approx);
+    img = rotateImage(img, angle_approx, interp_method);
     fprintf("Rotation of %.4f was performed\n", angle_approx);
 
     % Implement Projection Profiling Method to find exact rotaton angle
@@ -45,12 +47,12 @@ function [aligned_img] = alignDocument(img)
     theta = -0.1;
 
     % Case 1: Counter-clockwise rotation check
-    rotated_img = rotateImage(img, abs(theta));
+    rotated_img = rotateImage(img, abs(theta), interp_method);
     rotated_img_grayscale = rgb2gray(rotated_img);
     std_counter_clockwise = std(sum(rotated_img_grayscale, 2));
 
     % Case 2: Clockwise rotation check
-    rotated_img = rotateImage(img, theta);
+    rotated_img = rotateImage(img, theta, interp_method);
     rotated_img_grayscale = rgb2gray(rotated_img);
     std_clockwise = std(sum(rotated_img_grayscale, 2));
 
@@ -75,8 +77,7 @@ function [aligned_img] = alignDocument(img)
     prev_std = max(std_counter_clockwise, std_clockwise);
     while true
         % Rotate the image
-        %rotated_test = rotateImage(rotated_img, theta);
-        rotated_test = rotateImage(rotated_img, theta);
+        rotated_test = rotateImage(rotated_img, theta, interp_method);
         std_test = std(sum(rgb2gray(rotated_test), 2));
 
         if std_test > prev_std
@@ -85,7 +86,7 @@ function [aligned_img] = alignDocument(img)
         else
             % Undo the last iteration to get the theta for maximum STD
             theta = theta - step_size; % undo the previous addition
-            step_size = step_size / 5;
+            step_size = step_size / 10;
             break;
         end
     end
@@ -97,8 +98,7 @@ function [aligned_img] = alignDocument(img)
     theta = -step_size;
     while true
         % Rotate the image
-        %rotated_test = rotateImage(rotated_img, theta);
-        rotated_test = rotateImage(rotated_img, theta);
+        rotated_test = rotateImage(rotated_img, theta, interp_method);
         std_test = std(sum(rgb2gray(rotated_test), 2));
 
         if std_test > prev_std
@@ -112,7 +112,8 @@ function [aligned_img] = alignDocument(img)
     end
 
     % Rotate the image by the refined angle to deskew it
-    aligned_img = rotateImage(rotated_img, theta);
+    aligned_img = rotateImage(rotated_img, theta, interp_method);
+    imshow(aligned_img)
 
 end
 

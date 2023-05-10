@@ -1,10 +1,11 @@
-function img_rotated = rotateImage(img, angle)
+function img_rotated = rotateImage(img, angle, interp_method)
 
     % Function that performs image rotation by a specified angle
     % --------------------------------------------------------------
     %
     % @param img is the input image
     % @param angle rotation angle
+    % @param interp_method is the interpolation method bilinear or NN
     %
     % @returns img_rotated is the rotated image
     %
@@ -22,6 +23,8 @@ function img_rotated = rotateImage(img, angle)
     % original image are:
     %
     % X_new = R * X_old => X_old = R^(-1) * X_new = R * X_new
+    %
+    % The default interpolation method is bilinear
     %
     % --------------------------------------------------------------
     % 
@@ -70,6 +73,19 @@ function img_rotated = rotateImage(img, angle)
             % Ensure that the calculated pixel is within the bounds of the
             % original image
             if ~(min(original_pixel, [], "all") >= 1 && all(original_pixel <= [img_height img_width]))
+                continue;
+            end
+
+            % Use specified Interpolation Method (Bilinear or Nearest
+            % Neighbor)
+            if interp_method == "nearest"
+                % Round the pixel coordinates to the nearest neighbor
+                nearest_pixel = round(original_pixel);
+        
+                % Assign the nearest neighbor pixel color to the output image
+                img_rotated(i, j, :) = img(nearest_pixel(1), nearest_pixel(2), :);
+
+                % If Nearest Neighbor method is used, do not proceed below
                 continue;
             end
 
