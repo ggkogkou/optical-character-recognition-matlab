@@ -1,24 +1,36 @@
 function [angle] = findRotationAngle(img)
 
-    % Function that makes an initial prediction about the skew angle
-    % --------------------------------------------------------------
+    %   Estimate the skew angle of a rotated image
     %
-    % @param img is the input rotated image
+    %   ------------------------------------------
     %
-    % @return angle is an approximation of the skew angle
+    %   Take an input rotated image 'img' and estimates the skew angle. The
+    %   function returns 'angle', which is an approximation of the skew angle
     %
-    % --------------------------------------------------------------
+    %   The estimation process involves converting the image to grayscale,
+    %   applying Gaussian blur to filter higher frequencies, computing the
+    %   magnitude of the image's FFT (Fast Fourier Transform), focusing on the
+    %   upper half of the FFT, selecting the brightest pixels, and calculating
+    %   the rotation angle based on the position of the brightest pixel
     %
-    % If angle > 0, image is rotated clockwisely
-    % else if angle < 0, image is rotated counterclockwisely
+    %   Input:
+    %   - img: Input rotated image
     %
-    % --------------------------------------------------------------
+    %   Output:
+    %   - angle: Approximation of the skew angle in degrees
     %
-    % Convert image to grayscale 
-    % Apply Gaussian blur to filter higher frequencies
+    %   Example:
+    %   % Load and estimate the skew angle of a rotated image
+    %   img = imread('rotated_text.png');
+    %   angle = findRotationAngle(img);
+    %   fprintf("Skew angle estimate: %.2f degrees\n", angle);
+    %
+    %   See also: fft2, imgaussfilt, atan2, rad2deg
+
+    % Standard deviation of the Gaussian distribution
     sigma_blur = 4;
 
-    % Calculate magnitude of image FFT
+    % Convert image to grayscale and calculate magnitude of image FFT
     % Center FFT and compute logarithm of magnitude
     img_fft_log = log(1 + abs(fftshift(fft2(imgaussfilt(rgb2gray(img), sigma_blur)))));
 
@@ -45,7 +57,6 @@ function [angle] = findRotationAngle(img)
 
     % Blur a bit the cropped FFT to enhance the dominant line
     cropped_fft = imgaussfilt(cropped_fft, 2);
-
 
     figure(3)
     imshow(cropped_fft, [])

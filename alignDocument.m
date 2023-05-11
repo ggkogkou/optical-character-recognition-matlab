@@ -1,28 +1,31 @@
 function [aligned_img] = alignDocument(img)
 
-    % Function to determine deskew angle of text image and align it
-    % --------------------------------------------------------------
+    %   Align a text image with skew [-45, 45] degrees
+    %   ----------------------------------------------
     %
-    % @see https://www.mdpi.com/2076-3417/10/7/2236
+    %   Brief:
+    %   This function takes an input image 'img' and performs
+    %   deskewing to align the text image. The function returns 'aligned_img',
+    %   which is the fully aligned image.
     %
-    % @brief Align vertically a text image that has skew [-45,45] degrees
+    %   The alignment process involves finding the approximate rotation angle
+    %   using the FFT, rotating the image by the estimated angle, and then
+    %   iteratively refining the rotation angle to find the exact skew angle
     %
-    % @param img is the input image
+    %   Input:
+    %   - img: Input image of the text
     %
-    % @return img_deskewed is the fully deskewed image
+    %   Output:
+    %   - aligned_img: Aligned text image
     %
-    % --------------------------------------------------------------
+    %   Example:
+    %   % Load and align a text image
+    %   img = imread('text1.png');
+    %   aligned_img = alignDocument(img);
+    %   imshow(aligned_img);
     %
-    % Essentially this function uses findRotationAngle() to make an initial
-    % estimation of the rotation angle. After reverting this rotation, next
-    % step is to determine whether the aproximate angle is larger or smaller
-    % than the real one, and then iterate through a number of small angles 
-    % in order to find the exact skew angle.
-    % The key is to search all angles as long as the STD of the projections
-    % is increasing. At the peak STD, the document is considered aligned.
-    %
-    % --------------------------------------------------------------
-    %
+    %   See also: findRotationAngle, rotateImage, cropBlackPadding
+
     % Read the image
     img = imread('text1.png');
     img = imrotate(img, -32);

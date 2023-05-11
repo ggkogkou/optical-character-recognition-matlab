@@ -1,33 +1,51 @@
 function img_rotated = rotateImage(img, angle, interp_method)
 
-    % Function that performs image rotation by a specified angle
-    % --------------------------------------------------------------
+    %   Rotate an image by a specified angle
+    %   ------------------------------------
     %
-    % @param img is the input image
-    % @param angle rotation angle
-    % @param interp_method is the interpolation method bilinear or NN
+    %   This function takes an input image 'img' and rotates it by the specified
+    %   'angle' using the specified interpolation method 'interp_method'. 
+    %   The function returns the rotated image 'img_rotated'
     %
-    % @returns img_rotated is the rotated image
+    %   The rotation is performed by calculating the new coordinates that
+    %   correspond to the old ones using rotation equations. The transformation
+    %   is represented by a rotation matrix. The image is resized to accommodate
+    %   the rotated image, and the pixels are mapped from the original image to
+    %   the rotated image using either bilinear interpolation or nearest
+    %   neighbor interpolation.
     %
-    % --------------------------------------------------------------
+    %   The equations to find the new coordinate that corresponds to the old
+    %   one are:
     %
-    % The equations to find the new coordinate that corresponds to the old
-    % one are:
+    %   x_new = x_original * cosθ + y * sinθ
+    %   y_new = - x_original * sinθ + y * cosθ
     %
-    % x_new = x_original * cosθ + y * sinθ
-    % y_new = - x_original * sinθ + y * cosθ
+    %   or, in matrix form, X_new = R * X_old 
     %
-    % or, in matrix form, X_new = R * X_old 
+    %   Additionally the equations to map back the new coordinates to the
+    %   original image are:
     %
-    % Additionally the equations to map back the new coordinates to the
-    % original image are:
+    %   X_new = R * X_old => X_old = R^(-1) * X_new = R * X_new
     %
-    % X_new = R * X_old => X_old = R^(-1) * X_new = R * X_new
+    %   Inputs:
+    %   - img: Input image to be rotated
+    %   - angle: Rotation angle in degrees
+    %   - interp_method: Interpolation method, either "bilinear" or
+    %   "nearest"
     %
-    % The default interpolation method is bilinear
+    %   Output:
+    %   - img_rotated: Rotated image
     %
-    % --------------------------------------------------------------
-    % 
+    %   Example:
+    %   % Load an image and rotate it by 45 degrees using bilinear interpolation
+    %   img = imread('input_image.png');
+    %   angle = 30;
+    %   interp_method = "bilinear";
+    %   img_rotated = rotateImage(img, angle, interp_method);
+    %   imshow(img_rotated);
+    %
+    %   See also: cos, sin, floor, ceil
+
     % Check whether rotation angle is zero or not
     if angle == 0
         img_rotated = img;

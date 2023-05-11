@@ -1,61 +1,43 @@
-function [cropped_img] = cropBlackPadding(img)
+function cropped_img = cropBlackPadding(img)
     
-    % Function that crops black padding from image
-    % --------------------------------------------------------------
+    %   Crop black padding from an input RGB image
+    %   ------------------------------------------
     %
-    % @param img is the input RGB image
+    %   Brief:
+    %   This function takes an RGB image as input and
+    %   crops the black padding from the image. The resulting cropped image
+    %   contains only the non-black regions
     %
-    % @returns cropped_img is the RGB image without black padding
+    %   Input:
+    %   - img: An M-by-N-by-3 RGB image, where M and N are the dimensions of
+    %     the image and 3 represents the red, green, and blue channels
     %
-    % --------------------------------------------------------------
-    % 
-    % Convert RGB to Grayscale
+    %   Output:
+    %   - cropped_img: The RGB image without black padding, containing only
+    %     the non-black regions
+    %
+    %   Example:
+    %   % Crop black padding from an RGB image
+    %   img = imread('input_image.png');
+    %   cropped_img = cropBlackPadding(img);
+    %   imshow(cropped_img);
+
+    % Convert RGB to grayscale
     img_grayscale = rgb2gray(img);
-
+    
     % Find the projections of the rows and columns
-    rows_proj = sum(img_grayscale, 2); row_idx1 = 0; row_idx2 = 0;
-    cols_proj = sum(img_grayscale, 1); col_idx1 = 0; col_idx2 = 0;
-
-    % Find the first and last elements that have value >0, meaning that
-    % they belong in the text image. All the lines that are full black must
-    % be deleted
-    for i=1 : length(rows_proj)
-        % First non-zero element
-        if rows_proj(i) ~= 0
-            row_idx1 = i;
-            break;
-        end
-    end
-
-    % For the last non-zero element
-    for i=length(rows_proj) : -1 : 1
-        % Last non-zero element
-        if rows_proj(i) ~= 0
-            row_idx2 = i;
-            break;
-        end
-    end
-
-    % Same but for columns
-    for i=1 : length(cols_proj)
-        % First non-zero element
-        if cols_proj(i) ~= 0
-            col_idx1 = i;
-            break;
-        end
-    end
-
-    % For the last non-zero element
-    for i=length(cols_proj) : -1 : 1
-        % Last non-zero element
-        if cols_proj(i) ~= 0
-            col_idx2 = i;
-            break;
-        end
-    end
-
-    % Crop the black padding rows and obtain final image
+    rows_proj = sum(img_grayscale, 2);
+    cols_proj = sum(img_grayscale, 1);
+    
+    % Find the first and last non-zero elements in rows_proj
+    row_idx1 = find(rows_proj ~= 0, 1, 'first');
+    row_idx2 = find(rows_proj ~= 0, 1, 'last');
+    
+    % Find the first and last non-zero elements in cols_proj
+    col_idx1 = find(cols_proj ~= 0, 1, 'first');
+    col_idx2 = find(cols_proj ~= 0, 1, 'last');
+    
+    % Crop the black padding rows and obtain the final image
     cropped_img = img(row_idx1:row_idx2, col_idx1:col_idx2, :);
 
 end
-
