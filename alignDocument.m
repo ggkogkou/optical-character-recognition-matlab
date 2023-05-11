@@ -58,12 +58,12 @@ function [aligned_img] = alignDocument(img)
 
     if std_counter_clockwise > std_clockwise
         % Image still needs to be rotated in counter-clockwise direction
-        theta = 0.5;
         step_size = 0.5;
+        theta = step_size;
     elseif std_counter_clockwise < std_clockwise
         % Image still needs to be rotated in clockwise direction
-        theta = -0.5;
         step_size = -0.5;
+        theta = step_size;
     else
         % Image is aligned perfectly
         aligned_img = rotated_img;
@@ -78,6 +78,7 @@ function [aligned_img] = alignDocument(img)
     while true
         % Rotate the image
         rotated_test = rotateImage(rotated_img, theta, interp_method);
+        rotated_test = cropBlackPadding(rotated_test);
         std_test = std(sum(rgb2gray(rotated_test), 2));
 
         if std_test > prev_std
@@ -86,19 +87,21 @@ function [aligned_img] = alignDocument(img)
         else
             % Undo the last iteration to get the theta for maximum STD
             theta = theta - step_size; % undo the previous addition
-            step_size = step_size / 10;
+            step_size = step_size / 5;
             break;
         end
     end
 
     % Rotate the image by the angle found at this stage
-    rotated_img = rotateImage(img, theta);
+    rotated_img = cropBlackPadding(rotateImage(img, theta));
+    prev_std = std(sum(rgb2gray(rotated_img), 2));
 
     % Loop backward to find more accurate result
     theta = -step_size;
     while true
         % Rotate the image
         rotated_test = rotateImage(rotated_img, theta, interp_method);
+        rotated_test = cropBlackPadding(rotated_test);
         std_test = std(sum(rgb2gray(rotated_test), 2));
 
         if std_test > prev_std
@@ -111,8 +114,11 @@ function [aligned_img] = alignDocument(img)
         end
     end
 
-    % Rotate the image by the refined angle to deskew it
-    aligned_img = rotateImage(rotated_img, theta, interp_method);
+    % Rotate the image by the refined angle to deskew it and crop unnecessary
+    % padding
+    aligned_img = cropBlackPadding(rotateImage(rotated_img, theta, interp_method));
+
+    figure(1)
     imshow(aligned_img)
 
 end
