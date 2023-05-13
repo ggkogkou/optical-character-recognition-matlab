@@ -4,6 +4,7 @@ function [angle] = findRotationAngle(img)
     %
     %   ------------------------------------------
     %
+    %   Brief:
     %   Take an input rotated image 'img' and estimates the skew angle. The
     %   function returns 'angle', which is an approximation of the skew angle
     %
@@ -34,10 +35,6 @@ function [angle] = findRotationAngle(img)
     % Center FFT and compute logarithm of magnitude
     img_fft_log = log(1 + abs(fftshift(fft2(imgaussfilt(rgb2gray(img), sigma_blur)))));
 
-    % Plot logarithm of FFT
-    figure(2)
-    imshow(img_fft_log, [])
-
     % Focus on the upper half of the image, since FFT is symmetric
     img_height = size(img_fft_log, 1);
     img_width = size(img_fft_log, 2);
@@ -58,9 +55,6 @@ function [angle] = findRotationAngle(img)
     % Blur a bit the cropped FFT to enhance the dominant line
     cropped_fft = imgaussfilt(cropped_fft, 2);
 
-    figure(3)
-    imshow(cropped_fft, [])
-
     % Select the brightest pixel of FFT
     % At a second stage, check if the 2 border pixels are also the next
     % brighest
@@ -76,7 +70,14 @@ function [angle] = findRotationAngle(img)
     % Determine if the image is rotated clockwise or counter-clockwise
     if max_idx(1) < ceil(size(cropped_fft, 1)/2)
         angle = -angle;
-    end  
+    end
+
+    % Plot FFTs
+    figure(1)
+    imshow(img_fft_log, [])
+
+    figure(2)
+    imshow(cropped_fft, [])
 
 end
 

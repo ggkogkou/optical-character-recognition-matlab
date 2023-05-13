@@ -3,6 +3,7 @@ function img_rotated = rotateImage(img, angle, interp_method)
     %   Rotate an image by a specified angle
     %   ------------------------------------
     %
+    %   Brief:
     %   This function takes an input image 'img' and rotates it by the specified
     %   'angle' using the specified interpolation method 'interp_method'. 
     %   The function returns the rotated image 'img_rotated'
