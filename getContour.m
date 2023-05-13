@@ -21,26 +21,27 @@ function c = getContour(x)
     %   - contours: Cell array containing the contours of the letter
     %
     %   Example:
-    %   x = imread('a.png');
-    %   contours = getcontour(x);
-    %   figure(1);
-    %   imshow(x);
-    %   hold on;
-    %   for k=1 : numel(contours)
-    %       contour = contours{k};
-    %       plot(contour(:, 2), contour(:, 1), 'r', 'LineWidth', 2);
+    %   % Read the letter image
+    %   letter = imread('a.png');
+    %   % Get the contours using getcontour function
+    %   contours = getContour(letter);
+    %   % Display the original letter image
+    %   figure; imshow(letter); hold on;
+    %   % Plot the contours on the image
+    %   for i=1 : numel(contours)
+    %   contour = contours{i};
+    %   plot(contour(:, 1), contour(:, 2), 'r', 'LineWidth', 2);
     %   end
-    %   hold off;
-    %   title('Letter Contours');
+    %   hold off; title('Letter Contours');
     %
-    %   See also: RGB2GRAY, IMBINARIZE, IMDILATE, BWMORPH, BWLABEL, BWBOUNDARIES
+    %   See also: RGB2GRAY, IMBINARIZE, IMDILATE, BWMORPH, BWBOUNDARIES
 
     % Convert the letter to grayscale
-    img_gray = im2gray(x);
+    img_grayscale = im2gray(x);
 
     % Binarize the image using an appropriate threshold
-    threshold = graythresh(img_gray);
-    img_binary = imbinarize(img_gray, threshold);
+    threshold = graythresh(img_grayscale);
+    img_binary = imbinarize(img_grayscale, threshold);
 
     % Perform morphological operations to enhance the contours
     img_dilated = imdilate(img_binary, strel('disk', 1));
@@ -54,10 +55,8 @@ function c = getContour(x)
     c = cell(numel(boundaries), 1);
 
     % Extract the contour points for each contour
-    for k=1 : numel(boundaries)
-        contour = boundaries{k};
-        contour = fliplr(contour); % Reverse the order of coordinates
-        c{k} = contour;
+    for i=1 : numel(boundaries)
+        c{i} = fliplr(boundaries{i});
     end
 
 end
