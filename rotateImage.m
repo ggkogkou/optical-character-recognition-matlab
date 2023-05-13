@@ -1,4 +1,4 @@
-function img_rotated = rotateImage(img, angle, interp_method)
+function [img_rotated] = rotateImage(img, angle, interp_method)
 
     %   Rotate an image by a specified angle
     %   ------------------------------------

@@ -1,4 +1,4 @@
-function c = getContour(x)
+function [c] = getContour(x)
 
     %   Locate and extract contours of a letter image
     %   ---------------------------------------------
