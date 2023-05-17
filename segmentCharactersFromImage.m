@@ -82,16 +82,16 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     line_num = 1;
     while true
         % Access the line
-        i = lines{line_num};
+        line = lines{line_num};
 
         % Cell arrays to store the extracted character bounds and characters
         character_bounds = cell(0);
         characters = cell(0);
 
         % Calculate column projections of the line
-        cols_proj = sum(i, 1);
+        cols_proj = sum(line, 1);
 
-        num_rows = size(i, 1);
+        num_rows = size(line, 1);
 
         % Set the threshold for character break detection
         character_break_threshold = sum(ones(num_rows, 1));
@@ -108,13 +108,13 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
 
         % Crop the line in the beginning of the process
         line_start = letter_start_idx;
-        line_end = numel(cols_proj) - find(fliplr(cols_proj) ~= character_break_threshold, 1) + 2;
+        line_end = numel(cols_proj) - find(fliplr(cols_proj) ~= character_break_threshold, 1) + 1;
 
-        i = i(:, line_start:line_end);
+        line = line(:, line_start:line_end);
         cols_proj = cols_proj(line_start:line_end);
 
         % Update number of columns
-        num_cols = size(i, 2);
+        num_cols = size(line, 2);
 
         char_start = 0; is_char_start = true; count = 1;
         for i=1 : num_cols
@@ -148,7 +148,7 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
             % Get indices found above
             indices = character_bounds{i};
 
-            characters{i} = i(:, indices(1):indices(2));
+            characters{i} = line(:, indices(1):indices(2));
 
         end
 
