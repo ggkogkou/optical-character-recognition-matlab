@@ -25,8 +25,10 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     % Example:
     %   img = imread('text1.png');
     %   line_characters = segmentCharactersFromImage(img);
-
     % Convert to grayscale
+
+    img = imread("text1.png");
+    
     img_grayscale = im2gray(img);
 
     % Binarize the image using an appropriate threshold
@@ -100,7 +102,7 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
         count_whites = 0;
 
         % Determine the width of a letter
-        letter_start_idx = find(cols_proj ~= character_break_threshold, 1) - 1;
+        letter_start_idx = find(cols_proj ~= character_break_threshold, 1);
         letter_width = find(cols_proj(letter_start_idx:end) == character_break_threshold, 1) - 1;
 
         % Set the threshold for blank space character detection
@@ -164,20 +166,18 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     end
 
     % Transfer character in a cell array in continuous form
-    chars = cell(0);
-    count_idx = 1;
+    % Initialize an empty cell array to store the characters
     
-    for i=1 : length(line_characters)
-        % Get the first line
-        buffer = line_characters{i};
-        for j=1 : length(buffer)
-            chars{count_idx} = buffer{j};
-            count_idx = count_idx + 1;
-        end
+    % Concatenate all characters into a single cell array
+    chars = [line_characters{:}];
 
-        % Explicitly state that line breaks
-        chars{count_idx} = 'line_break';
-        count_idx = count_idx + 1;
+    figure
+    for i=1 : length(line_characters)
+        tmp = line_characters{i};
+        for j=1 : length(tmp)
+            tmp2 = tmp{j};
+            imshow(tmp2);
+        end
     end
 
 end
