@@ -27,3 +27,4 @@ function [distance] = distanceCriterion(descriptor1, descriptor2)
     distance = sum(distance.^2);
 
 end
+
