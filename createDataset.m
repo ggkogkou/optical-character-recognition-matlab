@@ -1,54 +1,48 @@
 function [dataset] = createDataset(img, txt_file)
 
-    clc; clear;
-    img = imread("text1.png");
-    txt_file = "text1.txt";
+    % Extract contours from segmented characters and creates a dataset
+    % ----------------------------------------------------------------
+    %
+    % Brief:
+    %   This function takes an input image containing segmented characters and
+    %   an ASCII text file as input. It extracts the contours of the characters
+    %   and creates a dataset with corresponding labels from the text file.
+    %
+    % Input arguments:
+    %   - img: An input image containing segmented characters. It should be a
+    %          grayscale image
+    %   - txt_file: The path to an ASCII text file containing the labels for
+    %               the characters in the image
+    %
+    % Output:
+    %   - dataset: A cell array representing the dataset. Each row of the array
+    %              contains a character contour and its corresponding label.
+    %
+    % Example:
+    %   img = imread('text1.png');
+    %   txt_file = 'text1.txt';
+    %   dataset = createDataset(img, txt_file);
     
     % Segment characters from the image
-    [line_characters, characters] = segmentCharactersFromImage(img);
-    
-    % Read the text file to get the corresponding labels
-    fid = fopen(txt_file, 'r');
-    if fid < 0
-        error('Cannot open file: %s', txt_file);
-    end
+    [~, characters] = segmentCharactersFromImage(img);
 
-    text = fscanf(fid, '%c');
+    % Remove empty lines and trailing spaces at the end of each line of the
+    % ASCII text file
+    text_no_blanks = removeEmptyLinesAndSpaces(txt_file);
 
-    % Remove leading and trailing whitespace characters
-    text = strtrim(text);
-    fclose(fid);
-
-    % Remove empty lines and trailing spaces at the end of each line
-    output_file_no_blanks = 'test_file.txt';
-    removeEmptyLinesAndSpaces(txt_file, output_file_no_blanks);
-
-
-    fid = fopen(output_file_no_blanks, 'r');
-    if fid < 0
-        error('Cannot open file: %s', output_file_no_blanks);
-    end
-
-    output_file_no_blanks = fscanf(fid, '%c');
-
-    % Remove leading and trailing whitespace characters
-    output_file_no_blanks = strtrim(output_file_no_blanks);
-    fclose(fid);
-
-    length(output_file_no_blanks)
-    
     % Create the dataset and extract contours
-    num_characters = length(characters)
-    dataset = cell(num_characters, 2);
+    num_characters = length(characters);
+    num_common = min(num_characters, length(text_no_blanks));
+    dataset = cell(num_common, 2);
     
-    for i=1 : min(num_characters, length(text))
+    for i=1 : num_common
 
         % Find contours
         char_i = characters{i};
         contour = getContour(double(char_i));
 
         % Assign the label based on the text file
-        label = text(i); % Typecast label to a cell
+        label = text_no_blanks(i); % Typecast label to a cell
         
         % Add the data point to the dataset
         dataset{i, 1} = contour;

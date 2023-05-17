@@ -26,14 +26,17 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     %   img = imread('text1.png');
     %   line_characters = segmentCharactersFromImage(img);
     % Convert to grayscale
-
-    img = imread("text1.png");
     
     img_grayscale = im2gray(img);
 
     % Binarize the image using an appropriate threshold
     threshold = graythresh(img_grayscale);
     img_binarized = imbinarize(img_grayscale, threshold);
+
+    % Add white background as padding to avoid character ending exactly on
+    % the edge of the image
+    padding = 40;
+    img_binarized = padarray(img_binarized, [padding, padding], 1, 'both');
 
     % Line/Row Extraction
     rows_proj = sum(img_binarized, 2);
@@ -106,11 +109,11 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
         letter_width = find(cols_proj(letter_start_idx:end) == character_break_threshold, 1) - 1;
 
         % Set the threshold for blank space character detection
-        blank_space_threshold = floor(0.8 * letter_width);
+        blank_space_threshold = floor(0.95 * letter_width);
 
         % Crop the line in the beginning of the process
         line_start = letter_start_idx;
-        line_end = numel(cols_proj) - find(fliplr(cols_proj) ~= character_break_threshold, 1) + 1;
+        line_end = numel(cols_proj) - find(fliplr(cols_proj) ~= character_break_threshold, 1) + 10;
 
         line = line(:, line_start:line_end);
         cols_proj = cols_proj(line_start:line_end);
@@ -134,15 +137,15 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
                 count_whites = 0;
             elseif cols_proj(i) >= character_break_threshold && count_whites > blank_space_threshold
                 % Find blank space
-                blank_space_start = i - floor(0.8 * blank_space_threshold);
+                blank_space_start = i - blank_space_threshold + 1;
                 blank_space_end = i;
-                character_bounds{count} = [blank_space_start, blank_space_end]; 
+                character_bounds{count} = [blank_space_start, blank_space_end];
                 count = count + 1;
                 count_whites = 0;
-            elseif cols_proj(i) >= character_break_threshold
+            else
                 count_whites = count_whites + 1;
             end
-    
+
         end
 
         % Extract the characters from the line
@@ -151,7 +154,6 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
             indices = character_bounds{i};
 
             characters{i} = line(:, indices(1):indices(2));
-
         end
 
         % Add characters from the analyzed line to the total cell array
@@ -171,10 +173,15 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     % Concatenate all characters into a single cell array
     chars = [line_characters{:}];
 
+    testing = false;
+    if ~testing
+        return;
+    end
+
     figure
     for i=1 : length(line_characters)
         tmp = line_characters{i};
-        for j=1 : length(tmp)
+        for j=50 : length(tmp)
             tmp2 = tmp{j};
             imshow(tmp2);
         end
