@@ -1,4 +1,4 @@
-function class_labels = separateCharactersIntoClasses(dataset)
+function [dataset_1, dataset_2, dataset_3, dataset_blank] = separateCharactersIntoClasses(dataset)
 
     % Separate characters into classes based on the number of contours
     % ----------------------------------------------------------------
@@ -17,33 +17,47 @@ function class_labels = separateCharactersIntoClasses(dataset)
     %
     % Example:
     %   dataset = createDataset(img, txt_file);
-    %   class_labels = separateCharactersIntoClasses(dataset);
+    %   [class1, class2, class3, class0] = separateCharactersIntoClasses(dataset);
     
     % Get the number of characters in the dataset
     num_characters = length(dataset);
     
-    % Initialize the cell array to store class labels
+    % Initialize the cell arrays to store class labels and divided datasets
     class_labels = cell(num_characters, 1);
+    dataset_1 = cell(num_characters, 1);
+    dataset_2 = cell(num_characters, 1);
+    dataset_3 = cell(num_characters, 1);
+    dataset_blank = cell(num_characters, 1);
     
     % Iterate over each character in the dataset
-    for i=1 : num_characters
-        % Count the number of contours for the current character
-        num_contours = numel(dataset{i, 1});
+    for i = 1:num_characters
+        % Get the contours and label for the current character
+        contours = dataset{i, 1};
         label = dataset{i, 2};
 
         % Assign the character to a class based on the number of contours
         if strcmp(label, 'BLANK')
             % Treat blank spaces separately
             class_labels{i} = 'Class Blank';
-        elseif num_contours == 1
-            class_labels{i} = 'Class 1';
-        elseif num_contours == 2
-            class_labels{i} = 'Class 2';
-        elseif num_contours >= 3
-            class_labels{i} = 'Class 3';
+            dataset_blank{i} = dataset(i, :);
+        else
+            num_contours = numel(contours);
+            class_labels{i} = ['Class ', num2str(num_contours)];
+            if num_contours == 1
+                dataset_1{i} = dataset(i, :);
+            elseif num_contours == 2
+                dataset_2{i} = dataset(i, :);
+            elseif num_contours >= 3
+                dataset_3{i} = dataset(i, :);
+            end
         end
-
     end
+
+    % Remove empty cells from the datasets
+    dataset_1 = dataset_1(~cellfun('isempty', dataset_1));
+    dataset_2 = dataset_2(~cellfun('isempty', dataset_2));
+    dataset_3 = dataset_3(~cellfun('isempty', dataset_3));
+    dataset_blank = dataset_blank(~cellfun('isempty', dataset_blank));
 
 end
 

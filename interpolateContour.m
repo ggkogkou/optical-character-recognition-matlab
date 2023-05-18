@@ -33,3 +33,4 @@ function interpolated_contour = interpolateContour(contour, num_points)
     interpolated_contour = [interpolated_x', interpolated_y'];
 
 end
+
