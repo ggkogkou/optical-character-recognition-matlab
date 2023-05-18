@@ -43,6 +43,11 @@ function [c] = getContour(x)
     threshold = graythresh(img_grayscale);
     img_binary = imbinarize(img_grayscale, threshold);
 
+    % Add white background as padding to avoid character ending exactly on
+    % the edge of the image
+    padding = 10;
+    img_binary = padarray(img_binary, [padding, padding], 1, 'both');
+
     % Perform morphological operations to enhance the contours
     img_dilated = imdilate(img_binary, strel('disk', 1));
     img_outline = img_dilated - img_binary;
