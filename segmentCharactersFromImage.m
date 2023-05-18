@@ -26,7 +26,7 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     %   img = imread('text1.png');
     %   line_characters = segmentCharactersFromImage(img);
     % Convert to grayscale
-    
+    img = imread("text1.png");
     img_grayscale = im2gray(img);
 
     % Binarize the image using an appropriate threshold
@@ -109,7 +109,7 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
         letter_width = find(cols_proj(letter_start_idx:end) == character_break_threshold, 1) - 1;
 
         % Set the threshold for blank space character detection
-        blank_space_threshold = floor(0.95 * letter_width);
+        blank_space_threshold = floor(0.9 * letter_width);
 
         % Crop the line in the beginning of the process
         line_start = letter_start_idx;
@@ -121,7 +121,8 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
         % Update number of columns
         num_cols = size(line, 2);
 
-        char_start = 0; is_char_start = true; count = 1;
+        char_start = 0; is_char_start = true; count = 1; 
+        found_blank_space = false; % Forbid two blank spaces in a row
         for i=1 : num_cols
             % Locate the characters
             if cols_proj(i) < character_break_threshold && is_char_start
@@ -135,13 +136,15 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
                 character_bounds{count} = [char_start, char_end];
                 count = count + 1;
                 count_whites = 0;
-            elseif cols_proj(i) >= character_break_threshold && count_whites > blank_space_threshold
+                found_blank_space = false;
+            elseif cols_proj(i) >= character_break_threshold && count_whites > blank_space_threshold && ~found_blank_space
                 % Find blank space
                 blank_space_start = i - blank_space_threshold + 1;
                 blank_space_end = i;
                 character_bounds{count} = [blank_space_start, blank_space_end];
                 count = count + 1;
                 count_whites = 0;
+                found_blank_space = true;
             else
                 count_whites = count_whites + 1;
             end
@@ -179,9 +182,9 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     end
 
     figure
-    for i=1 : length(line_characters)
+    for i=5 : length(line_characters)
         tmp = line_characters{i};
-        for j=50 : length(tmp)
+        for j=10 : length(tmp)
             tmp2 = tmp{j};
             imshow(tmp2);
         end

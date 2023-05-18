@@ -32,17 +32,22 @@ function [dataset] = createDataset(img, txt_file)
 
     % Create the dataset and extract contours
     num_characters = length(characters);
+    length(text_no_blanks);
     num_common = min(num_characters, length(text_no_blanks));
     dataset = cell(num_common, 2);
     
     for i=1 : num_common
-
         % Find contours
         char_i = characters{i};
         contour = getContour(double(char_i));
 
         % Assign the label based on the text file
         label = text_no_blanks(i); % Typecast label to a cell
+
+        % Deal with blank spaces in order to avoid errors in kNN classifier
+        if strcmp(label, ' ')
+            label = 'BLANK';
+        end
         
         % Add the data point to the dataset
         dataset{i, 1} = contour;

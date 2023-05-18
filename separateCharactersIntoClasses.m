@@ -18,9 +18,6 @@ function class_labels = separateCharactersIntoClasses(dataset)
     % Example:
     %   dataset = createDataset(img, txt_file);
     %   class_labels = separateCharactersIntoClasses(dataset);
-
-    img = imread("text1.png"); txt_file = 'text1.txt';
-    dataset = createDataset(img, txt_file);
     
     % Get the number of characters in the dataset
     num_characters = length(dataset);
@@ -32,15 +29,20 @@ function class_labels = separateCharactersIntoClasses(dataset)
     for i=1 : num_characters
         % Count the number of contours for the current character
         num_contours = numel(dataset{i, 1});
+        label = dataset{i, 2};
 
         % Assign the character to a class based on the number of contours
-        if num_contours == 1
-            class_labels{i} = '1st class';
+        if strcmp(label, 'BLANK')
+            % Treat blank spaces separately
+            class_labels{i} = 'Class Blank';
+        elseif num_contours == 1
+            class_labels{i} = 'Class 1';
         elseif num_contours == 2
-            class_labels{i} = '2nd class';
+            class_labels{i} = 'Class 2';
         elseif num_contours >= 3
-            class_labels{i} = '3rd class';
+            class_labels{i} = 'Class 3';
         end
+
     end
 
 end

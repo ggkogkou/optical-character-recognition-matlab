@@ -31,6 +31,6 @@ function [cleared_file] = removeEmptyLinesAndSpaces(input_file)
     non_empty_lines = trimmed_lines(~cellfun('isempty', trimmed_lines));
 
     % Return cleared text as string
-    cleared_file = strjoin(non_empty_lines);
+    cleared_file = strjoin(non_empty_lines, '');
 
 end

@@ -16,6 +16,7 @@ function [trainFeatures, trainLabels] = featureExtraction(trainData)
     
     % Preallocate arrays for the features and labels
     numSamples = size(trainData, 1);
+
     % Get the maximum number of points among all contours in the training data
     maxPoints = max(cellfun(@(contour) size(contour, 1), trainData(:, 1)));
     trainFeatures = cell(numSamples, 1);
@@ -24,7 +25,14 @@ function [trainFeatures, trainLabels] = featureExtraction(trainData)
     % Iterate over each sample in the dataset
     for i = 1:size(trainData, 1)
         contours = trainData{i, 1};
+
+        % Convert label to ASCII numeric values
         label = trainData{i, 2};
+     %   if strcmp(label, 'BLANK')
+    %        label = 32;
+    %    else
+    %       label = double(label);
+    %    end
         
         % Initialize an empty cell array to store the interpolated contours
         interpolatedContours = cell(size(contours));
