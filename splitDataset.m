@@ -17,16 +17,16 @@ function [train_data, test_data] = splitDataset(dataset, train_ratio)
     %   - trainData: Training set containing a portion of the dataset
     %   - testData: Test set containing the remaining portion of the dataset
     
-    % Step 1: Shuffle the dataset
+    % Shuffle the dataset
     shuffled_data = dataset(randperm(size(dataset, 1)), :);
     
-    % Step 2: Determine the split index
+    % Determine the split index
     split_index = round(train_ratio * size(shuffled_data, 1));
     
-    % Step 3: Assign data to training set
+    % Assign data to training set
     train_data = shuffled_data(1:split_index, :);
     
-    % Step 4: Assign data to test set
+    % Assign data to test set
     test_data = shuffled_data(split_index+1:end, :);
 
 end

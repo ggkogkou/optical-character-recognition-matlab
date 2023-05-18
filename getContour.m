@@ -33,8 +33,6 @@ function [c] = getContour(x)
     %   plot(contour(:, 1), contour(:, 2), 'r', 'LineWidth', 2);
     %   end
     %   hold off; title('Letter Contours');
-    %
-    %   See also: RGB2GRAY, IMBINARIZE, IMDILATE, BWMORPH, BWBOUNDARIES
 
     % Convert the letter to grayscale
     img_grayscale = im2gray(x);

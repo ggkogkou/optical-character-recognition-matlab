@@ -10,26 +10,29 @@ function class_labels = separateCharactersIntoClasses(dataset)
     %   depending on the number of contours
     %
     % Input:
-    %   - dataset : Cell array of contours for each character in the dataset.
+    %   - dataset : Cell array of contours for each character in the dataset
     %
     % Output:
-    %   - class_labels : Cell array of class labels for each character.
+    %   - class_labels : Cell array of class labels for each character
     %
     % Example:
     %   dataset = createDataset(img, txt_file);
     %   class_labels = separateCharactersIntoClasses(dataset);
+
+    img = imread("text1.png"); txt_file = 'text1.txt';
+    dataset = createDataset(img, txt_file);
     
     % Get the number of characters in the dataset
-    num_characters = size(dataset, 1);
+    num_characters = length(dataset);
     
     % Initialize the cell array to store class labels
     class_labels = cell(num_characters, 1);
     
     % Iterate over each character in the dataset
-    for i = 1:num_characters
+    for i=1 : num_characters
         % Count the number of contours for the current character
-        num_contours = numel(dataset{i});
-        
+        num_contours = numel(dataset{i, 1});
+
         % Assign the character to a class based on the number of contours
         if num_contours == 1
             class_labels{i} = '1st class';
@@ -41,3 +44,4 @@ function class_labels = separateCharactersIntoClasses(dataset)
     end
 
 end
+

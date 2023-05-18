@@ -22,7 +22,7 @@ function [dataset] = createDataset(img, txt_file)
     %   img = imread('text1.png');
     %   txt_file = 'text1.txt';
     %   dataset = createDataset(img, txt_file);
-    
+    img = imread("text1.png"); txt_file = 'text1.txt';
     % Segment characters from the image
     [~, characters] = segmentCharactersFromImage(img);
 
