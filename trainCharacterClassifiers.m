@@ -9,32 +9,25 @@ function trained_classifiers = trainCharacterClassifiers(dataset)
     %   of trained kNN classifiers, where each classifier corresponds to a character class.
     %
     % Inputs:
-    %   - dataset: Cell array of feature vectors for each character in the dataset
+    %   - dataset: Cell array of characters after splitting
     %
     % Output:
     %   - trained_classifiers: Cell array of trained kNN classifiers for each character class
     %
     % Example:
-    %   dataset = produceFeatureVectors(original_dataset);
-    %   trained_classifiers = trainCharacterClassifiers(dataset);
-    %
-    %   Detailed Description:
-    %       This function trains separate character classifiers using the kNN (k-Nearest Neighbors) algorithm.
-    %       It takes as input a dataset containing feature vectors for each character and returns a cell array
-    %       of trained kNN classifiers, where each classifier corresponds to a character class.
-    %
-    %   See also: produceFeatureVectors, separateCharactersIntoClasses, fitcknn
+    %   img = imread("text1.png"); txt = 'text1.txt';
+    %   dataset = createDataset(img, txt);
+    %   [dataset, ~] = splitDataset(dataset, 0.7);
+    %   trained_classifiers = trainCharacterClassifiers(dataset)
 
-    img = imread("text1.png"); txt = 'text1.txt'; dataset = createDataset(img, txt);
-    [dataset, ~] = splitDataset(dataset, 0.7);
-    
     % Separate dataset into classes based on the number of contours
     [dataset_1, dataset_2, dataset_3, ~] = separateCharactersIntoClasses(dataset);
 
-    dataset_1 = produceFeatureVectors(dataset_1);
-    dataset_2 = produceFeatureVectors(dataset_2);
-    dataset_3 = produceFeatureVectors(dataset_3);
-    
+    % Extract feature vectors for each dataset using the contourDescriptor method
+    dataset_1 = produceFeatureVectors(dataset_1, 400);
+    dataset_2 = produceFeatureVectors(dataset_2, 400);
+    dataset_3 = produceFeatureVectors(dataset_3, 400);
+
     % Initialize the cell array to store trained classifiers
     trained_classifiers = cell(3, 1);
     
@@ -53,6 +46,7 @@ function trained_classifiers = trainCharacterClassifiers(dataset)
         feature_vectors = cell(size(current_dataset, 1), 1);
         labels = cell(size(current_dataset, 1), 1);
         
+        % Convert the feature vectors and labels to the appropriate format for kNN
         for i=1 : size(current_dataset, 1)
             % Get the feature vectors and label for the current character
             feature_vectors{i} = transpose(current_dataset{i, 1});
@@ -71,3 +65,4 @@ function trained_classifiers = trainCharacterClassifiers(dataset)
     end
     
 end
+

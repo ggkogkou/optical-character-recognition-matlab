@@ -1,4 +1,4 @@
-function feature_vectors = produceFeatureVectors(dataset)
+function feature_vectors = produceFeatureVectors(dataset, interpolation_points)
 
     % Generate feature vectors for contours in a dataset
     % --------------------------------------------------
@@ -14,17 +14,7 @@ function feature_vectors = produceFeatureVectors(dataset)
     % Output:
     %   - feature_vectors: A cell array containing the computed feature vectors for each contour
 
-    % Initialize interpolation points variable
-    interpolation_points = -1;
-
-    % Loop through each data point in the dataset
-    for i=1 : size(dataset, 1)
-        complex_points = dataset{i, 1};
-
-        % Update the interpolation points variable
-        interpolation_points = max(interpolation_points, length(complex_points));
-
-    end
+    
 
     % Get the number of rows in the dataset
     num_rows = size(dataset, 1);
