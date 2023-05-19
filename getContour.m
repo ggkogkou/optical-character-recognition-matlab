@@ -1,66 +1,125 @@
 function [c] = getContour(x)
 
-    %   Locate and extract contours of a letter image
-    %   ---------------------------------------------
+    % Extract the outer boundary and inner contours of a letter image
+    % ---------------------------------------------------------------
     %
-    %   Brief:
-    %   - This function locates and extracts the contours of a letter image.
-    %   - It first converts the input letter image to grayscale and binarizes it using
-    %   an appropriate threshold. Then, morphological operations are performed to
-    %   enhance the contours.
-    %   - The image is dilated and the outline is obtained by subtracting the
-    %   dilated image from the binary image.
-    %   - Thinning is applied to reduce the thickness of the edges.
-    %   - Finally, the contours are identified using the bwboundaries function,
-    %   and the coordinates are stored in a cell array
+    % Brief:
+    %   This function takes an input letter image and extracts the outer boundary
+    %   along with the upper and lower inner contours of the letter. It follows a
+    %   series of steps including image binarization, dilation, thinning, and contour
+    %   detection to identify the contours
     %
-    %   Input:
-    %   - x: Image of a single letter
+    % Input
+    %   x - Input letter image, represented as a grayscale or binary image
     %
-    %   Output:
-    %   - contours: Cell array containing the contours of the letter
+    % Output
+    %   c - Cell array containing the outer boundary and inner contours. The first
+    %       cell contains the outer boundary, and subsequent cells store the inner
+    %       contours. Each contour is represented as an Nx2 matrix, where N is the
+    %       number of points describing the contour. Each row of the matrix contains
+    %       the x and y coordinates of the corresponding point
     %
-    %   Example:
-    %   % Read the letter image
-    %   letter = imread('a.png');
-    %   % Get the contours using getcontour function
-    %   contours = getContour(letter);
-    %   % Display the original letter image
-    %   figure; imshow(letter); hold on;
-    %   % Plot the contours on the image
-    %   for i=1 : numel(contours)
-    %   contour = contours{i};
-    %   plot(contour(:, 1), contour(:, 2), 'r', 'LineWidth', 2);
+    % Example:
+    %   % Load the letter image
+    %   x = imread('letter.png');
+    %
+    %   % Extract the contours
+    %   c = getcontour(x);
+    %
+    %   % Access the outer boundary
+    %   outer_boundary = c{1};
+    %
+    %   % Access the upper inner contour
+    %   upper_inner_contour = c{2};
+    %
+    %   % Access the lower inner contour
+    %   lower_inner_contour = c{3};
+    %
+    %   % Plot the letter image with contours
+    %   figure;
+    %   subplot(1, 2, 1);
+    %   imshow(x);
+    %   title('Original Letter Image');
+    %
+    %   subplot(1, 2, 2);
+    %   imshow(x);
+    %   title('Letter Image with Contours');
+    %   hold on;
+    %
+    %   for i = 1:numel(c)
+    %       contour = c{i};
+    %       plot(contour(:, 2), contour(:, 1), 'r', 'LineWidth', 1);
     %   end
-    %   hold off; title('Letter Contours');
+    %
+    %   hold off;
+
+    x = imread("B.png");
 
     % Convert the letter to grayscale
-    img_grayscale = im2gray(x);
+    x = im2gray(x);
+
+    % Add white as padding to avoid character boundaries on the image edge
+    padding = 10;
+    x = padarray(x, [padding, padding], 255, 'both');
 
     % Binarize the image using an appropriate threshold
-    threshold = graythresh(img_grayscale);
-    img_binary = imbinarize(img_grayscale, threshold);
-
-    % Add white background as padding to avoid character ending exactly on
-    % the edge of the image
-    padding = 10;
-    img_binary = padarray(img_binary, [padding, padding], 1, 'both');
+    threshold = graythresh(x);
+    img_binary = imbinarize(x, threshold);
 
     % Perform morphological operations to enhance the contours
     img_dilated = imdilate(img_binary, strel('disk', 1));
     img_outline = img_dilated - img_binary;
     img_thinned = bwmorph(img_outline, 'thin', Inf);
 
-    % Find the contours using bwboundaries
+    % Identify outer boundary and hole contours
     boundaries = bwboundaries(img_thinned, 'noholes');
+
+    % Determine upper and lower inner contours
+    outer_boundary = boundaries{1};
+    inner_contours = boundaries(2:end);
+
+    % Calculate centroids of inner contours in order to determine which is
+    % the upper
+    centroids = cellfun(@(contour) mean(contour), inner_contours, 'UniformOutput', false);
+    centroidY = cellfun(@(centroid) centroid(1), centroids);
+    [~, sortedIndices] = sort(centroidY);
 
     % Initialize cell array to store contours
     c = cell(numel(boundaries), 1);
 
-    % Extract the contour points for each contour
-    for i=1 : numel(boundaries)
-        c{i} = fliplr(boundaries{i});
+    % Store contours in cell array
+    c{1} = outer_boundary;
+    
+    for i=1 : numel(inner_contours)
+        c{i+1} = inner_contours{sortedIndices(i)};
     end
+
+    % If using the testing mode, continue to plotting the results
+    testing_mode = true;
+
+    if ~testing_mode
+        return;
+    end
+
+    % Plot letter image with contours
+    figure;
+    subplot(1, 2, 1);
+    imshow(x);
+    title('Original Letter Image');
+    hold on;
+    
+    subplot(1, 2, 2);
+    imshow(x);
+    title('Letter Image with Contours');
+    hold on;
+    
+    for i=1 : numel(c)
+        contour = c{i};
+        subplot(1, 2, 2);
+        plot(contour(:, 2), contour(:, 1), 'r', 'LineWidth', 1);
+    end
+    
+    hold off;
 
 end
 
