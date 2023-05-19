@@ -26,11 +26,7 @@ function [aligned_img] = alignDocument(img)
     %
     %   See also: findRotationAngle, rotateImage, cropBlackPadding
 
-    % Read the image
-    img = imread('text1.png');
-    img = imrotate(img, -32);
-
-    interp_method = "nearest";
+    interp_method = "bilinear";
 
     % Find approximate rotation angle using FFT
     angle_approx = findRotationAngle(img);
@@ -39,6 +35,10 @@ function [aligned_img] = alignDocument(img)
     % Rotate the image by that angle
     img = rotateImage(img, angle_approx, interp_method);
     fprintf("Rotation of %.4f was performed\n", angle_approx);
+
+    figure
+    imshow(img)
+    title("IMAGE AFTER INITIAL ROTATION")
 
     % Implement Projection Profiling Method to find exact rotaton angle
     % -----------------------------------------------------------------
@@ -51,12 +51,12 @@ function [aligned_img] = alignDocument(img)
 
     % Case 1: Counter-clockwise rotation check
     rotated_img = rotateImage(img, abs(theta), interp_method);
-    rotated_img_grayscale = rgb2gray(rotated_img);
+    rotated_img_grayscale = im2gray(rotated_img);
     std_counter_clockwise = std(sum(rotated_img_grayscale, 2));
 
     % Case 2: Clockwise rotation check
     rotated_img = rotateImage(img, theta, interp_method);
-    rotated_img_grayscale = rgb2gray(rotated_img);
+    rotated_img_grayscale = im2gray(rotated_img);
     std_clockwise = std(sum(rotated_img_grayscale, 2));
 
     if std_counter_clockwise > std_clockwise
@@ -82,7 +82,7 @@ function [aligned_img] = alignDocument(img)
         % Rotate the image
         rotated_test = rotateImage(rotated_img, theta, interp_method);
         rotated_test = cropBlackPadding(rotated_test);
-        std_test = std(sum(rgb2gray(rotated_test), 2));
+        std_test = std(sum(im2gray(rotated_test), 2));
 
         if std_test > prev_std
             prev_std = std_test;
@@ -96,8 +96,8 @@ function [aligned_img] = alignDocument(img)
     end
 
     % Rotate the image by the angle found at this stage
-    rotated_img = cropBlackPadding(rotateImage(img, theta));
-    prev_std = std(sum(rgb2gray(rotated_img), 2));
+    rotated_img = cropBlackPadding(rotateImage(img, theta, interp_method));
+    prev_std = std(sum(im2gray(rotated_img), 2));
 
     % Loop backward to find more accurate result
     theta = -step_size;
@@ -105,7 +105,7 @@ function [aligned_img] = alignDocument(img)
         % Rotate the image
         rotated_test = rotateImage(rotated_img, theta, interp_method);
         rotated_test = cropBlackPadding(rotated_test);
-        std_test = std(sum(rgb2gray(rotated_test), 2));
+        std_test = std(sum(im2gray(rotated_test), 2));
 
         if std_test > prev_std
             prev_std = std_test;
@@ -120,9 +120,6 @@ function [aligned_img] = alignDocument(img)
     % Rotate the image by the refined angle to deskew it and crop unnecessary
     % padding
     aligned_img = cropBlackPadding(rotateImage(rotated_img, theta, interp_method));
-
-    figure(1)
-    imshow(aligned_img)
 
 end
 

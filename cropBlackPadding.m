@@ -23,7 +23,7 @@ function cropped_img = cropBlackPadding(img)
     %   imshow(cropped_img);
 
     % Convert RGB to grayscale
-    img_grayscale = rgb2gray(img);
+    img_grayscale = im2gray(img);
     
     % Find the projections of the rows and columns
     rows_proj = sum(img_grayscale, 2);

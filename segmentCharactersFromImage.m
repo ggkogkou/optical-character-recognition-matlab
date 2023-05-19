@@ -26,7 +26,7 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     %   img = imread('text1.png');
     %   line_characters = segmentCharactersFromImage(img);
     % Convert to grayscale
-    img = imread("text1.png");
+
     img_grayscale = im2gray(img);
 
     % Binarize the image using an appropriate threshold

@@ -67,7 +67,7 @@ function evaluateCharacterRecognition()
 
         % Update the confusion matrix based on the true and predicted classes
         true_class = labels(i);
-        true_index = find(strcmp(true_class, labels(i)));
+        true_index = find(strcmp(true_class, class_predictions));
 
         for class_i = 1:num_classes
             predicted_index = find(strcmp(class_predictions{class_i}, labels(i)));

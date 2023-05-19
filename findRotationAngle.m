@@ -1,7 +1,6 @@
 function [angle] = findRotationAngle(img)
 
     %   Estimate the skew angle of a rotated image
-    %
     %   ------------------------------------------
     %
     %   Brief:
@@ -33,7 +32,7 @@ function [angle] = findRotationAngle(img)
 
     % Convert image to grayscale and calculate magnitude of image FFT
     % Center FFT and compute logarithm of magnitude
-    img_fft_log = log(1 + abs(fftshift(fft2(imgaussfilt(rgb2gray(img), sigma_blur)))));
+    img_fft_log = log(1 + abs(fftshift(fft2(imgaussfilt(im2gray(img), sigma_blur)))));
 
     % Focus on the upper half of the image, since FFT is symmetric
     img_height = size(img_fft_log, 1);
@@ -73,11 +72,13 @@ function [angle] = findRotationAngle(img)
     end
 
     % Plot FFTs
-    figure(1)
+    figure
     imshow(img_fft_log, [])
+    title("FFT LOGARITHM")
 
-    figure(2)
+    figure
     imshow(cropped_fft, [])
+    title("FFT CROPPED")
 
 end
 
