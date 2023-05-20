@@ -1,4 +1,4 @@
-function trained_classifiers = trainCharacterClassifiers(dataset)
+function [trained_classifiers, unique_labels] = trainCharacterClassifiers(dataset)
 
     % Train character classifiers using kNN algorithm
     % -----------------------------------------------
@@ -30,6 +30,12 @@ function trained_classifiers = trainCharacterClassifiers(dataset)
 
     % Initialize the cell array to store trained classifiers
     trained_classifiers = cell(3, 1);
+
+    % Nearest Neighbors
+    k = 4;
+
+    % Find the unique labels of the train set
+    unique_labels = cell(3, 1);
     
     % Train kNN classifiers for each character class
     for class_i=1 : 3
@@ -56,9 +62,15 @@ function trained_classifiers = trainCharacterClassifiers(dataset)
         % Typecast the cell arrays to appropriate format
         X = cell2mat(feature_vectors);
         Y = string(labels);
+
+        % Update unique labels cell array
+        unique_labels{class_i} = unique(Y);
+
+        % S parameter for distance metric
+        S = ones(1, size(X, 2));
         
         % Train kNN classifier
-        Mdl = fitcknn(X, Y);
+        Mdl = fitcknn(X, Y, 'NumNeighbors', k, 'Distance', 'seuclidean', 'Scale', S);%'Standardize', true);
         
         % Store the trained classifier
         trained_classifiers{class_i} = Mdl;

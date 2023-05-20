@@ -14,8 +14,6 @@ function feature_vectors = produceFeatureVectors(dataset, interpolation_points)
     % Output:
     %   - feature_vectors: A cell array containing the computed feature vectors for each contour
 
-    
-
     % Get the number of rows in the dataset
     num_rows = size(dataset, 1);
 
@@ -27,8 +25,6 @@ function feature_vectors = produceFeatureVectors(dataset, interpolation_points)
         % Get the contour of the current data point
         contour_i = dataset{i, 1};
         label_i = dataset{i, 2};
-
-        % Initialize the feature_i cell array to store feature vectors
 
         % Interpolate the contour points
         interpolated_contour = interpolateContour(contour_i, interpolation_points);
