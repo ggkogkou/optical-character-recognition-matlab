@@ -53,8 +53,6 @@ function [c] = getContour(x)
     %
     %   hold off;
 
-    x = imread("B.png");
-
     % Convert the letter to grayscale
     x = im2gray(x);
 
@@ -65,6 +63,12 @@ function [c] = getContour(x)
     % Binarize the image using an appropriate threshold
     threshold = graythresh(x);
     img_binary = imbinarize(x, threshold);
+
+    % Check if the image is blank (all white)
+    if all(img_binary(:, :))
+        c = cell(0);
+        return;
+    end
 
     % Perform morphological operations to enhance the contours
     img_dilated = imdilate(img_binary, strel('disk', 1));
@@ -95,7 +99,7 @@ function [c] = getContour(x)
     end
 
     % If using the testing mode, continue to plotting the results
-    testing_mode = true;
+    testing_mode = false;
 
     if ~testing_mode
         return;
