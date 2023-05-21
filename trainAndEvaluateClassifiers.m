@@ -1,32 +1,32 @@
 function trainAndEvaluateClassifiers(img, txt_path)
 
-% Train and evaluate kNN classifiers for different classes of characters
-% ----------------------------------------------------------------------
-%
-% Brief:
-%   The function loads the image and text files containing character samples and their labels. 
-%   It then creates a dataset by pairing each character sample with its corresponding label
-%
-%   The dataset is split into training and test sets, with 70% of the samples used for training and the remaining
-%   30% for testing. The function then separates the training set into three classes based on the number of contours
-%   in each character sample
-%
-%   Next, the function trains kNN classifiers for each class using the `trainClassifier` function. The number of
-%   interpolation points used for feature extraction is specified for each class
-%
-%   The test set is also separated into three classes based on the number of contours. The `evaluateClassifier`
-%   function is then called to evaluate the performance of each classifier on its corresponding test set. The
-%   weighted accuracy of each classifier is calculated
-%
-%   Finally, the results are displayed, showing the weighted accuracy for
-%   each class and the trained classifiers are saved for future use
-%
-% Inputs:
-%   - img: The text image itself (not just the path)
-%   - txt: Path to the text file containing corresponding ASCII characters
-%
-% Outputs:
-%   None
+    % Train and evaluate kNN classifiers for different classes of characters
+    % ----------------------------------------------------------------------
+    %
+    % Brief:
+    %   The function loads the image and text files containing character samples and their labels. 
+    %   It then creates a dataset by pairing each character sample with its corresponding label
+    %
+    %   The dataset is split into training and test sets, with 70% of the samples used for training and the remaining
+    %   30% for testing. The function then separates the training set into three classes based on the number of contours
+    %   in each character sample
+    %
+    %   Next, the function trains kNN classifiers for each class using the `trainClassifier` function. The number of
+    %   interpolation points used for feature extraction is specified for each class
+    %
+    %   The test set is also separated into three classes based on the number of contours. The `evaluateClassifier`
+    %   function is then called to evaluate the performance of each classifier on its corresponding test set. The
+    %   weighted accuracy of each classifier is calculated
+    %
+    %   Finally, the results are displayed, showing the weighted accuracy for
+    %   each class and the trained classifiers are saved for future use
+    %
+    % Inputs:
+    %   - img: The text image itself (not just the path)
+    %   - txt: Path to the text file containing corresponding ASCII characters
+    %
+    % Outputs:
+    %   None
 
     % Create the dataset
     dataset = createDataset(img, txt_path);

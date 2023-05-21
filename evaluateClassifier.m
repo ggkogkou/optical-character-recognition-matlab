@@ -78,10 +78,13 @@ function [weighted_accuracy, confusion_matrix] = evaluateClassifier(test_set, tr
     
     end
     
-    % Calculate performance metrics
+    % Calculate performance metrics and handle possible division by 0
     accuracy = sum(diag(confusion_matrix)) / sum(confusion_matrix(:));
     class_accuracy = diag(confusion_matrix) ./ sum(confusion_matrix, 2);
+    class_accuracy(isnan(class_accuracy)) = 0;  % Set NaN values to 0
     weighted_accuracy = sum(class_accuracy .* (sum(confusion_matrix, 2) / sum(confusion_matrix(:))));
+    weighted_accuracy = sum(weighted_accuracy(isfinite(weighted_accuracy)));  % Exclude NaN values
+
     
     % Display the results
     display_results = false;

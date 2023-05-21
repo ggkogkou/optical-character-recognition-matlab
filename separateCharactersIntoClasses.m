@@ -27,7 +27,9 @@ function [dataset_1, dataset_2, dataset_3, dataset_blank] = separateCharactersIn
     dataset_1 = cell(0);
     dataset_2 = cell(0);
     dataset_3 = cell(0);
-    dataset_blank = cell(0);
+
+    % An array to store the blank spaces indices
+    dataset_blank = zeros(sum(strcmp(dataset(:, 2), 'BLANK')), 1);
     
     % Iterate over each character in the dataset
     count_dataset_1 = 1; count_dataset_2 = 1; count_dataset_3 = 1; count_blanks = 1;
@@ -40,8 +42,7 @@ function [dataset_1, dataset_2, dataset_3, dataset_blank] = separateCharactersIn
         if strcmp(label, 'BLANK')
             % Treat blank spaces separately
             class_labels{i} = 'Class Blank';
-            dataset_blank{count_blanks, 1} = contours;
-            dataset_blank{count_blanks, 2} = label;
+            dataset_blank(count_blanks) = i;
             count_blanks = count_blanks + 1;
         else
             num_contours = numel(contours);
@@ -51,18 +52,18 @@ function [dataset_1, dataset_2, dataset_3, dataset_blank] = separateCharactersIn
                 dataset_1{count_dataset_1, 2} = label;
                 count_dataset_1 = count_dataset_1 + 1;
             elseif num_contours == 2
-                % bwboundaries has stored the exterior boundaries first
+                % getContour has stored the exterior boundaries first
                 dataset_2{count_dataset_2, 1} = contours{1};
                 dataset_2{count_dataset_2, 2} = strcat(label, '_outside');
                 dataset_2{count_dataset_2+1, 1} = contours{2};
                 dataset_2{count_dataset_2+1, 2} = strcat(label, '_inside');
                 count_dataset_2 = count_dataset_2 + 2;
             elseif num_contours >= 3
-                % bwboundaries has stored the exterior boundaries first
+                % getContour has stored the exterior boundaries first
                 dataset_3{count_dataset_3, 1} = contours{1};
                 dataset_3{count_dataset_3, 2} = strcat(label, '_outside');
 
-                % Determine which hole boundary is northern
+                % and the northern hole as second
                 dataset_3{count_dataset_3+1, 1} = contours{2};
                 dataset_3{count_dataset_3+1, 2} = strcat(label, '_inside_up');
                 dataset_3{count_dataset_3+2, 1} = contours{3};
