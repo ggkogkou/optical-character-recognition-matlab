@@ -25,8 +25,8 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     % Example:
     %   img = imread('text1.png');
     %   line_characters = segmentCharactersFromImage(img);
-    % Convert to grayscale
 
+    % Convert to grayscale
     img_grayscale = im2gray(img);
 
     % Binarize the image using an appropriate threshold
@@ -76,7 +76,7 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
         indices = line_bounds{i};
         lines{i} = img_binarized(indices(1):indices(2), :);
     end
-
+    
     % The same process is applied for the individual character extraction
 
     % 2D cell array to store the extracted characters. Each subcell array
