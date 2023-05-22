@@ -20,7 +20,7 @@ function [dataset_1, dataset_2, dataset_3, dataset_blank] = separateCharactersIn
     %   class_labels = separateCharactersIntoClasses(dataset);
     
     % Get the number of characters in the dataset
-    num_characters = length(dataset);
+    num_characters = size(dataset, 1);
     
     % Initialize the cell arrays to store class labels and divided datasets
     class_labels = cell(num_characters, 1);

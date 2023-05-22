@@ -1,4 +1,4 @@
-function trainAndEvaluateClassifiers(img, txt_path)
+function trainAndEvaluateClassifiers(img, txt_path, interpolation_points)
 
     % Train and evaluate kNN classifiers for different classes of characters
     % ----------------------------------------------------------------------
@@ -24,6 +24,8 @@ function trainAndEvaluateClassifiers(img, txt_path)
     % Inputs:
     %   - img: The text image itself (not just the path)
     %   - txt: Path to the text file containing corresponding ASCII characters
+    %   - interpolation_points: Cell array containing the number of 
+    %                           interpolation points per class
     %
     % Outputs:
     %   None
@@ -44,12 +46,12 @@ function trainAndEvaluateClassifiers(img, txt_path)
     unique_labels = cell(3, 1);
     
     % Choose interpolation points for each class
-    N1 = 400; N2 = 400; N3 = 400;
+    N1 = interpolation_points{1}; N2 = interpolation_points{2}; N3 = interpolation_points{3};
     
     % Train the character classifiers
     [trained_classifiers{1}, unique_labels{1}] = trainClassifier(train_set_1, N1);
-    [trained_classifiers{2}, unique_labels{2}] = trainClassifier(train_set_2, N1);
-    [trained_classifiers{3}, unique_labels{3}] = trainClassifier(train_set_3, N1);
+    [trained_classifiers{2}, unique_labels{2}] = trainClassifier(train_set_2, N2);
+    [trained_classifiers{3}, unique_labels{3}] = trainClassifier(train_set_3, N3);
     
     % Separate the test dataset depending to the number of contours
     [test_set_1, test_set_2, test_set_3, ~] = separateCharactersIntoClasses(test_set);

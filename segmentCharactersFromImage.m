@@ -182,9 +182,9 @@ function [line_characters, chars] = segmentCharactersFromImage(img)
     end
 
     figure
-    for i=5 : length(line_characters)
+    for i=1 : length(line_characters)
         tmp = line_characters{i};
-        for j=10 : length(tmp)
+        for j=1 : length(tmp)
             tmp2 = tmp{j};
             imshow(tmp2);
         end
