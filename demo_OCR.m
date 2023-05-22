@@ -42,5 +42,5 @@ accuracy = num_same_chars / (num_same_chars + num_different_chars);
 % Display the results
 fprintf("Number of same characters: %d\n", num_same_chars);
 fprintf("Number of different characters: %d\n", num_different_chars);
-fprintf("Accuracy: %.4f\n%%", accuracy*100);
+fprintf("Accuracy: %.4f%%\n", accuracy*100);
 

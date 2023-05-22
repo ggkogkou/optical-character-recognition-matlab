@@ -16,13 +16,13 @@ function [lines] = readText(img)
     
     % Perform text line extraction to get individual lines
     [lines_extracted, ~] = segmentCharactersFromImage(img);
-    num_lines = numel(lines_extracted);
-
-    % Define interpolation points for feature extraction
-    interpolation_points = 400;
+    num_lines = numel(lines_extracted);    
 
     % Get the trained classifier
     trained_classifier = load("trained_classifiers.mat");
+
+    % Define interpolation points for feature extraction
+    interpolation_points = trained_classifier.interpolation_points;
 
     % Get the different characters from each line and extract contours
     character_contours_per_line = cell(num_lines, 1);
@@ -73,7 +73,7 @@ function [lines] = readText(img)
         % Separate the dataset into classes depending on the number of contours
         [class_1, class_2, class_3, ~] = separateCharactersIntoClasses(line);
 
-        for class_i = 1:3
+        for class_i=1 : 3
             % Select the corresponding class
             if class_i == 1 && ~isempty(class_1)
                 selected_class = class_1;
@@ -86,7 +86,7 @@ function [lines] = readText(img)
             end
 
             % Extract feature vectors from contours
-            selected_class = produceFeatureVectors(selected_class, interpolation_points);
+            selected_class = produceFeatureVectors(selected_class, interpolation_points{class_i});
 
             num_labels = size(selected_class, 1);
 

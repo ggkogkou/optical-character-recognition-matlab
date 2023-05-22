@@ -68,8 +68,9 @@ function trainAndEvaluateClassifiers(img, txt_path, interpolation_points)
     fprintf('Class 2 -> Weighted Accuracy: %.3f%%\n', weighted_accuracy_2 * 100);
     fprintf('Class 3 -> Weighted Accuracy: %.3f%%\n', weighted_accuracy_3 * 100);
     
-    % Save the trained classifiers in order to be used with new data
-    save('trained_classifiers.mat', 'trained_classifiers');
+    % Save the trained classifiers and interpolation points number in order
+    % to make the OCR completely independent from the kNN training phase
+    save('trained_classifiers.mat', 'trained_classifiers', 'interpolation_points');
 
 end
 
