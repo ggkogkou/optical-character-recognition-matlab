@@ -27,7 +27,7 @@ function [lines] = readText(img)
     % Get the different characters from each line and extract contours
     character_contours_per_line = cell(num_lines, 1);
 
-    for i = 1:num_lines
+    for i=1 : num_lines
         % Get the corresponding line as a cell array of cell arrays
         line = lines_extracted{i};
         num_chars = numel(line);
@@ -59,7 +59,7 @@ function [lines] = readText(img)
     text_reconstructed = cell(num_lines, 1);
 
     % Separate the dataset into classes depending on the number of contours
-    for line_i = 1:num_lines
+    for line_i=1 : num_lines
         % Get the dataset of the characters of the line
         line = character_contours_per_line{line_i}; % 2D cell array
         line_length = size(line, 1);

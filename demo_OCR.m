@@ -18,15 +18,17 @@ actual_text = removeEmptyLinesAndSpaces(txt_file);
 ocr_text = removeEmptyLinesAndSpaces(output_file_dest);
 
 % Ensure that the strings have the same length
-if numel(actual_text) ~= numel(actual_text)
-    error("Strings must have the same length");
+if numel(actual_text) ~= numel(ocr_text)
+    fprintf("Something went wrong and actual with recognized text length doesn't match" + ...
+        "\nAccuracy is expected to be very low\n");
+    fprintf("Possibly the OCR could not segment the text image characters correctly\n");
 end
 
 num_same_chars = 0;
 num_different_chars = 0;
 
 % Iterate over the characters of the strings and compare them
-for i=1 : numel(actual_text)
+for i=1 : min(numel(actual_text), numel(ocr_text))
     if actual_text(i) == ocr_text(i)
         num_same_chars = num_same_chars + 1;
     else
@@ -40,5 +42,5 @@ accuracy = num_same_chars / (num_same_chars + num_different_chars);
 % Display the results
 fprintf("Number of same characters: %d\n", num_same_chars);
 fprintf("Number of different characters: %d\n", num_different_chars);
-fprintf("Accuracy: %.4f\n", accuracy*100);
+fprintf("Accuracy: %.4f\n%%", accuracy*100);
 
