@@ -6,30 +6,6 @@
 
 This repository provides an Optical Character Recognition (OCR) system implemented in MATLAB. The system is designed to extract text from images and perform character recognition using contour-based features and the k-Nearest Neighbors (kNN) algorithm. It offers a comprehensive set of features and functions for preprocessing images, extracting contour descriptors, training character classifiers, and evaluating the performance of the OCR system.
 
-## Table of Contents
-
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Functionality](#functionality)
-  - [Image Preprocessing](#image-preprocessing)
-  - [Contour-based Feature Extraction](#contour-based-feature-extraction)
-  - [k-Nearest Neighbors (kNN) Classification](#k-nearest-neighbors-knn-classification)
-  - [Extended Test Set](#extended-test-set)
-- [Requirements](#requirements)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Features
-
-- **Image Preprocessing**: The OCR system applies a series of image processing techniques, such as binarization, noise removal, and contour extraction, to enhance the text extraction process.
-
-- **Contour-based Feature Extraction**: The contour descriptors of characters are computed using the discrete Fourier transform (DFT) of the contour points. These descriptors capture the shape characteristics of the characters, enabling accurate character recognition.
-
-- **k-Nearest Neighbors (kNN) Classification**: Separate kNN classifiers are trained for different character classes based on the number of contours. The classifiers utilize the extracted contour features to classify characters effectively.
-
-- **Extended Test Set**: The test set is expanded to represent each contour of a letter separately. This allows the OCR system to handle characters with multiple contours, ensuring robust recognition performance.
-
 ## Installation
 
 To use the OCR system, follow these steps:
@@ -50,43 +26,59 @@ To use the OCR system, follow these steps:
 
 ## Usage
 
-The main function `evaluateCharacterRecognition` performs the evaluation of the OCR system using a test dataset. It calculates the weighted accuracy and displays the confusion matrix.
+To use the OCR system, follow these steps:
 
-To use the OCR system on your own images:
+1. Prepare the training dataset: Collect a dataset of images containing printed characters. Annotate the characters in the images and split the dataset into training and test sets.
 
-1. Provide the image file and its corresponding text file in the `img` and `txt` variables, respectively, in the `evaluateCharacterRecognition` function.
+2. Train the classifiers: Use the training dataset to train the kNN classifiers. Extract features from the characters and use them to train the classifiers. Save the trained classifiers in a `.mat` file.
 
-2. Adjust the parameters, such as the train/test split ratio and the number of DFT coefficients, according to your requirements.
+3. Run the OCR system: Use the `readText` function to perform OCR on an input image. Provide the path to the image as an argument to the function. The function will load the trained classifiers, process the image, and return the extracted text.
 
-## Functionality
+```matlab
+lines = readText('input_image.png');
+```
+
+4. Evaluate the results: Compare the extracted text with the ground truth to evaluate the accuracy of the OCR system. Use appropriate evaluation metrics such as character-level accuracy or word-level accuracy.
+
+## Example
+
+```matlab
+% Load the input image
+img = imread('input_image.png');
+
+% Perform OCR to extract the text
+lines = readText(img);
+
+% Display the extracted text
+for i = 1:numel(lines)
+    disp(lines{i});
+end
+```
+
+## Features
 
 The OCR system provides several key functionalities:
 
-### Image Preprocessing
-
-The system applies various image preprocessing techniques to enhance the text extraction process. These techniques include:
-
-- Binarization: Converting the image into a binary representation, separating the foreground (text) from the background.
-- Noise Removal: Removing noise and artifacts from the image, improving the quality of the extracted text.
-- Contour Extraction: Identifying and extracting contours from the binary image, representing the shape of individual characters.
-
-### Contour-based Feature Extraction
-
-The OCR system computes contour descriptors for each character using the discrete Fourier transform (DFT) of the contour points. These descriptors capture the shape characteristics of the characters and serve as the input features for the character classifiers.
-
-### k-Nearest Neighbors (kNN) Classification
-
-The system trains separate kNN classifiers for each character class based on the number of
-
- contours. The trained classifiers utilize the extracted contour features to perform character recognition. The kNN algorithm compares the features of a test character with the features of the training characters and assigns it to the most similar class.
-
-### Extended Test Set
-
-The test set is expanded to represent each contour of a letter separately. This allows the OCR system to handle characters with multiple contours accurately. By considering each contour as a separate character instance, the system enhances the recognition performance for complex characters.
+### Text line extraction: 
+The system can extract individual lines of text from an input image.
+### Character segmentation: 
+It segments the characters within each text line to isolate them for further processing.
+### Feature extraction: 
+The system extracts relevant features from the segmented characters to represent them numerically.
+### Training of classifiers: 
+It trains k-Nearest Neighbors (kNN) classifiers using the extracted features to recognize characters.
+#### Text reconstruction: 
+Based on the trained classifiers, the system reconstructs the text by predicting the characters in each line.
+### Output generation: 
+The reconstructed text is stored as a cell array and can be written to a text file.
 
 ## Requirements
 
-- MATLAB R2019a or later
+To run the OCR system, ensure that you have the following prerequisites:
+
+  - MATLAB
+  - Image Processing Toolbox: This toolbox provides a collection of functions and algorithms for image preprocessing, segmentation, and manipulation.
+  - Statistics and Machine Learning Toolbox: This toolbox contains the necessary functions and algorithms for machine learning, including kNN classification.
 
 ## Contributing
 
